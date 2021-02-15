@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import { StatusBar, Platform, Text } from 'react-native';
+import { StatusBar, Platform, Text, ActivityIndicator } from 'react-native';
 import useDevsUberApi from '../../useDevsUberApi';
 import {
   Container,
@@ -12,7 +12,8 @@ import {
   MenuItemText,
   Input,
   ActionButton,
-  ActionButtonText
+  ActionButtonText,
+  LoadingArea
 } from './styled';
 
 const Page = (props) => {
@@ -22,25 +23,52 @@ const Page = (props) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSignIn = async() => {
     if(email && password) {
+      setLoading(true);
       const res = await api.signin(email, password);
+      setLoading(false);
 
       if(res.error) {
         alert(res.error);
-      } else {
-        
+      } else {        
         // 1. guardar o token no reducer
         props.setToken(res.token);
-        alert(res.token);
         // 2. redirecionar para o Home
+        props.navigation.dispatch(StackActions.reset({
+          key: null,
+          index:0,
+          actions:[
+              NavigationActions.navigate({routeName:'HomeStack'})
+          ]
+        }));
       }
-      //console.log(res.token);
     }
   }
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
+    if(name && email && password) {
+      setLoading(true);
+      const res = await api.signup(name, email, password);
+      setLoading(false);
 
+      if(res.error) {
+        alert(res.error);
+      } else {        
+        // 1. guardar o token no reducer
+        props.setToken(res.token);
+        // 2. redirecionar para o Home
+        props.navigation.dispatch(StackActions.reset({
+          key: null,
+          index:0,
+          actions:[
+              NavigationActions.navigate({routeName:'HomeStack'})
+          ]
+        }));
+      }
+      //console.log(res);
+    }
   }
 
     return (
@@ -69,12 +97,14 @@ const Page = (props) => {
 
       {activeMenu == 'signup' &&
         <Input value={name}
+          editable={!loading}
           onChangeText={t=>setName(t)}
           placeholder="Nome"
           placeholderTextColor="#999"
         />
       }
       <Input
+        editable={!loading}
         value={email}
         onChangeText={t=>setEmail(t)}
         keyboardType="email-address"
@@ -83,7 +113,8 @@ const Page = (props) => {
         autoCapitalize="none"
       />
 
-      <Input value={password} 
+      <Input value={password}
+        editable={!loading} 
         onChangeText={t=>setPassword(t)}
         placeholder="Senha"
         placeholderTextColor="#999"
@@ -91,7 +122,7 @@ const Page = (props) => {
       />
 
       {activeMenu == 'signin' &&
-        <ActionButton onPress={handleSignIn}>
+        <ActionButton disabled={loading} onPress={handleSignIn}>
           <ActionButtonText>Login</ActionButtonText>
         </ActionButton>
       }
@@ -101,8 +132,12 @@ const Page = (props) => {
           <ActionButtonText>Cadastrar</ActionButtonText>
         </ActionButton>
       }
-      <Text>TOKEN: {props.token}</Text>
 
+      {loading &&
+        <LoadingArea>
+          <ActivityIndicator size="large" color="#FFF" /> 
+        </LoadingArea>
+      }
       </Container>
   
     );
@@ -115,7 +150,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    setToken:(token)=>dispatch({type:'SET_TOKEN', payload:{token:token}})
+    setToken:(token)=>dispatch({type:'SET_TOKEN', payload:{token}})
   };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Page);

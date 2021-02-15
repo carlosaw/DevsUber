@@ -5,6 +5,7 @@ const Preload = (props) => {
     if(!props.token) {
         // Login
         props.navigation.dispatch(StackActions.reset({
+            key: null,
             index:0,
             actions:[
                 NavigationActions.navigate({routeName:'Login'})
@@ -13,9 +14,10 @@ const Preload = (props) => {
     } else {
         // Home
         props.navigation.dispatch(StackActions.reset({
+            key: null,
             index:0,
             actions:[
-                NavigationActions.navigate({routeName:'HomeStack'})
+                NavigationActions.navigate({routeName:'Login'})
             ]
         }));
     }
