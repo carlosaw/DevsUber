@@ -41,7 +41,7 @@ const Page = (props) => {
           key: null,
           index:0,
           actions:[
-              NavigationActions.navigate({routeName:'HomeStack'})
+              NavigationActions.navigate({routeName:'HomeDrawer'})
           ]
         }));
       }

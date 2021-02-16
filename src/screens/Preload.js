@@ -17,7 +17,7 @@ const Preload = (props) => {
             key: null,
             index:0,
             actions:[
-                NavigationActions.navigate({routeName:'Login'})
+                NavigationActions.navigate({routeName:'HomeDrawer'})
             ]
         }));
     }
