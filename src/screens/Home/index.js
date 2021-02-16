@@ -1,12 +1,22 @@
-import React from 'react';
-import { StatusBar, SafeAreaView, Text } from 'react-native'
+import React, { useRef } from 'react';
+import { StatusBar, SafeAreaView, Text } from 'react-native';
+import MapView from 'react-native-maps';
+
+import { 
+    Container
+ } from './styled';
 
 const Page = () => {
-    return (
-        <SafeAreaView>
+    const map = useRef();
+    return (        
+        <Container>
             <StatusBar barStyle="light-content" />
-            <Text>...</Text>
-        </SafeAreaView>
+            <MapView
+                ref={map}
+                style={{flex:1}}
+                provider="google"
+            ></MapView>
+        </Container>            
     );
 }
 
