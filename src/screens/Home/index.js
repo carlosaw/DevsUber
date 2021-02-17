@@ -3,6 +3,7 @@ import { StatusBar } from 'react-native';
 import MapView from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
+import MapViewDirections from 'react-native-maps-directions';
 import { MapsAPI } from '../../config';
 
 import { 
@@ -21,10 +22,10 @@ const Page = () => {
 
     const [mapLoc, setMapLoc] = useState({
         center:{
-            //latitude:-15.656897,
-            //longitude:-56.127081
-            latitude:37.78825,
-            longitude:-122.4324
+            latitude:-15.656897,
+            longitude:-56.127081
+            //latitude:37.78825,
+            //longitude:-122.4324
         },
         zoom:16,
         pitch:0,
@@ -94,6 +95,19 @@ const Page = () => {
         }
     }
 
+    const handleDirectionsReady = (r) => {
+        console.log("RES: ", r);
+
+        map.current.fitToCoordinates(r.coordinates, {
+            edgePadding:{
+                left:50,
+                right:50,
+                bottom:50,
+                top:600
+            }
+        });
+    }
+
     return (
                 
         <Container>
@@ -113,7 +127,14 @@ const Page = () => {
                 }
 
                 {showDirections &&
-                    <></>
+                    <MapViewDirections
+                        origin={fromLoc.center}
+                        destination={toLoc.center}
+                        strokeWidth={5}
+                        strokeColor="black"
+                        apikey={MapsAPI}
+                        onReady={handleDirectionsReady}
+                    />
                 }
 
             </MapView>
