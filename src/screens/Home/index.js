@@ -5,6 +5,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import MapViewDirections from 'react-native-maps-directions';
 import { MapsAPI } from '../../config';
+import useDevsUberApi from '../../useDevsUberApi';
 
 import { 
     Container,
@@ -14,11 +15,16 @@ import {
     IntineraryPoint,
     IntineraryTitle,
     IntineraryValue,
-    IntineraryPlaceholder
+    IntineraryPlaceholder,
+    RequestDetails,
+    RequestDetail,
+    RequestTitle,
+    RequestValue
  } from './styled';
 
 const Page = () => {
     const map = useRef();
+    const api = useDevsUberApi();
 
     const [mapLoc, setMapLoc] = useState({
         center:{
@@ -35,6 +41,9 @@ const Page = () => {
     const [fromLoc, setFromLoc] = useState({});
     const [toLoc, setToLoc] = useState({});
     const [showDirections, setShowDirections] = useState(false);
+    const [requestDistance, setRequestDistance] = useState(0);
+    const [requestTime, setRequestTime] = useState(0);
+    const [requestPrice, setRequestPrice] = useState(0);
 
     useEffect(()=>{
         Geocoder.init(MapsAPI, {language:'pt-br'});
@@ -78,7 +87,7 @@ const Page = () => {
 
     }
     const handleToClick = async () => {
-        const geo = await Geocoder.from('Santo Antonio do Leverger, MT');
+        const geo = await Geocoder.from('Tangará da Serra, MT');
         if(geo.results.length > 0) {
             const loc = {
                 name:geo.results[0].formatted_address,
@@ -95,9 +104,16 @@ const Page = () => {
         }
     }
 
-    const handleDirectionsReady = (r) => {
-        console.log("RES: ", r);
+    const handleDirectionsReady = async (r) => {
+        setRequestDistance( r.distance );
+        setRequestTime( r.duration );
 
+        const priceReq = await api.getRequestPrice( r.distance );
+        if(!priceReq.error) {
+            setRequestPrice( priceReq.price );
+        }
+        setRequestPrice();
+console.log(priceReq.price);
         map.current.fitToCoordinates(r.coordinates, {
             edgePadding:{
                 left:50,
@@ -166,6 +182,24 @@ const Page = () => {
                         <IntineraryPlaceholder>Escolha um local de destino</IntineraryPlaceholder>
                     }
                 </>
+                </IntineraryItem>
+                <IntineraryItem>
+                    <>
+                        <RequestDetails>
+                            <RequestDetail>
+                                <RequestTitle>Distância</RequestTitle>
+                                <RequestValue>{requestDistance > 0?`${requestDistance.toFixed(1)}km`:'--'}</RequestValue>
+                            </RequestDetail>
+                            <RequestDetail>
+                                <RequestTitle>Tempo</RequestTitle>
+                                <RequestValue>{requestTime > 0?`${requestTime.toFixed(0)}mins`:'--'}</RequestValue>
+                            </RequestDetail>
+                            <RequestDetail>
+                                <RequestTitle>Preço</RequestTitle>
+                                <RequestValue>{requestPrice > 0?`${requestPrice.toFixed(2)}`:'--'}</RequestValue>
+                            </RequestDetail>
+                        </RequestDetails>
+                    </>
                 </IntineraryItem>
             </IntineraryArea>
         </Container>
