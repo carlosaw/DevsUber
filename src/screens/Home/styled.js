@@ -67,5 +67,5 @@ export const RequestTitle = styled.Text`
 
 export const RequestValue = styled.Text`
     color: #000;
-    font-size: 15px;
+    font-size: 12px;
 `;

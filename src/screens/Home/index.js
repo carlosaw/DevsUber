@@ -58,7 +58,7 @@ const Page = () => {
 
     const getMyCurrentPosition = ()  => {
         Geolocation.getCurrentPosition(async (info)=>{
-
+//console.log("COORDENADAS: ", info.coords);
             const geo = await Geocoder.from(info.coords.latitude, info.coords.longitude);
 
             if(geo.results.length > 0) {
@@ -75,7 +75,6 @@ const Page = () => {
                 };
                 setMapLoc(loc);
                 setFromLoc(loc);
-
             }
 
         }, (error)=>{
@@ -112,8 +111,7 @@ const Page = () => {
         if(!priceReq.error) {
             setRequestPrice( priceReq.price );
         }
-        setRequestPrice();
-console.log(priceReq.price);
+//console.log(priceReq.price);
         map.current.fitToCoordinates(r.coordinates, {
             edgePadding:{
                 left:50,
@@ -133,8 +131,7 @@ console.log(priceReq.price);
                 style={{flex:1}}
                 provider="google"
                 camera={mapLoc}
-            >
-            
+            >            
                 {fromLoc.center &&
                     <MapView.Marker pinColor="black" coordinate={fromLoc.center} />
                 }
@@ -188,15 +185,15 @@ console.log(priceReq.price);
                         <RequestDetails>
                             <RequestDetail>
                                 <RequestTitle>Distância</RequestTitle>
-                                <RequestValue>{requestDistance > 0?`${requestDistance.toFixed(1)}km`:'--'}</RequestValue>
+                                <RequestValue>{requestDistance > 0?`${requestDistance.toFixed(1)} km`:'---'}</RequestValue>
                             </RequestDetail>
                             <RequestDetail>
                                 <RequestTitle>Tempo</RequestTitle>
-                                <RequestValue>{requestTime > 0?`${requestTime.toFixed(0)}mins`:'--'}</RequestValue>
+                                <RequestValue>{requestTime > 0?`${requestTime.toFixed(0)} mins`:'---'}</RequestValue>
                             </RequestDetail>
                             <RequestDetail>
                                 <RequestTitle>Preço</RequestTitle>
-                                <RequestValue>{requestPrice > 0?`${requestPrice.toFixed(2)}`:'--'}</RequestValue>
+                                <RequestValue>{requestPrice > 0?`R$ ${requestPrice.toFixed(2)}`:'---'}</RequestValue>
                             </RequestDetail>
                         </RequestDetails>
                     </>
