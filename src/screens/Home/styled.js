@@ -25,7 +25,7 @@ export const IntineraryItem = styled.TouchableHighlight`
 export const IntineraryLabel = styled.View`
     flex-direction: row;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 `;
 
 export const IntineraryPoint = styled.View`
@@ -62,10 +62,28 @@ export const RequestDetail = styled.View`
 export const RequestTitle = styled.Text`
     color: #999;
     font-weight:bold;
-    font-size: 13px;
+    font-size: 12px;
 `;
 
 export const RequestValue = styled.Text`
     color: #000;
-    font-size: 15px;
+    font-size: 12px;
+`;
+
+export const RequestButtons = styled.View`
+    flex-direction: row;
+`;
+
+export const RequestButton = styled.TouchableHighlight`
+    flex: 1;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-color: ${props=>props.color};
+    margin: 20px 5px 0px 5px;
+`;
+
+export const RequestButtonText = styled.Text`
+    font-size: 10px;
 `;

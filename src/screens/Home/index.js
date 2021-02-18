@@ -19,7 +19,10 @@ import {
     RequestDetails,
     RequestDetail,
     RequestTitle,
-    RequestValue
+    RequestValue,
+    RequestButtons,
+    RequestButton,
+    RequestButtonText
  } from './styled';
 
 const Page = () => {
@@ -30,8 +33,6 @@ const Page = () => {
         center:{
             latitude:-15.656897,
             longitude:-56.127081
-            //latitude:37.78825,
-            //longitude:-122.4324
         },
         zoom:16,
         pitch:0,
@@ -87,7 +88,7 @@ const Page = () => {
 
     }
     const handleToClick = async () => {
-        const geo = await Geocoder.from('Tangará da Serra, MT');
+        const geo = await Geocoder.from('Cangas, MT');
         if(geo.results.length > 0) {
             const loc = {
                 name:geo.results[0].formatted_address,
@@ -112,18 +113,38 @@ const Page = () => {
         if(!priceReq.error) {
             setRequestPrice( priceReq.price );
         }
-        setRequestPrice();
-console.log(priceReq.price);
+        
+//console.log(priceReq.price);
         map.current.fitToCoordinates(r.coordinates, {
             edgePadding:{
                 left:50,
                 right:50,
                 bottom:50,
-                top:600
+                top:850
             }
         });
     }
 
+    const handleRequestGo = () => {
+        
+    }
+
+    const handleRequestCancel = () => {
+        setToLoc({});// reseta pra onde vai
+        setShowDirections(false);// reseta a rota
+        setRequestDistance(0);// reseta a distância
+        setRequestTime(0); // reseta o tempo
+        setRequestPrice(0); // reseta o preço
+
+        setMapLoc(fromLoc);// seta o mapa para o from center
+    }
+    // Ao cancelar volta o point para centro
+    const handleMapChange = async () => {
+        const cam = await map.current.getCamera();
+        cam.altitude = 0;
+        setMapLoc(cam);
+    }
+    
     return (
                 
         <Container>
@@ -133,6 +154,7 @@ console.log(priceReq.price);
                 style={{flex:1}}
                 provider="google"
                 camera={mapLoc}
+                onRegionChangeComplete={handleMapChange}
             >
             
                 {fromLoc.center &&
@@ -183,24 +205,35 @@ console.log(priceReq.price);
                     }
                 </>
                 </IntineraryItem>
-                <IntineraryItem>
-                    <>
-                        <RequestDetails>
-                            <RequestDetail>
-                                <RequestTitle>Distância</RequestTitle>
-                                <RequestValue>{requestDistance > 0?`${requestDistance.toFixed(1)}km`:'--'}</RequestValue>
-                            </RequestDetail>
-                            <RequestDetail>
-                                <RequestTitle>Tempo</RequestTitle>
-                                <RequestValue>{requestTime > 0?`${requestTime.toFixed(0)}mins`:'--'}</RequestValue>
-                            </RequestDetail>
-                            <RequestDetail>
-                                <RequestTitle>Preço</RequestTitle>
-                                <RequestValue>{requestPrice > 0?`${requestPrice.toFixed(2)}`:'--'}</RequestValue>
-                            </RequestDetail>
-                        </RequestDetails>
-                    </>
-                </IntineraryItem>
+
+                {fromLoc.center && toLoc.center &&
+                    <IntineraryItem>
+                        <>
+                            <RequestDetails>
+                                <RequestDetail>
+                                    <RequestTitle>Distância</RequestTitle>
+                                    <RequestValue>{requestDistance > 0?`${requestDistance.toFixed(1)} km`:'--'}</RequestValue>
+                                </RequestDetail>
+                                <RequestDetail>
+                                    <RequestTitle>Tempo</RequestTitle>
+                                    <RequestValue>{requestTime > 0?`${requestTime.toFixed(0)} mins`:'--'}</RequestValue>
+                                </RequestDetail>
+                                <RequestDetail>
+                                    <RequestTitle>Preço</RequestTitle>
+                                    <RequestValue>{requestPrice > 0?`R$ ${requestPrice.toFixed(2)}`:'--'}</RequestValue>
+                                </RequestDetail>
+                            </RequestDetails>
+                            <RequestButtons>
+                                <RequestButton color="#00FF00" onPress={handleRequestGo}>
+                                    <RequestButtonText>Solicitar Motorista</RequestButtonText>
+                                </RequestButton>
+                                <RequestButton color="#FF0000" onPress={handleRequestCancel}>
+                                    <RequestButtonText>Cancelar</RequestButtonText>
+                                </RequestButton>
+                            </RequestButtons>
+                        </>
+                    </IntineraryItem>
+                }
             </IntineraryArea>
         </Container>
                     
