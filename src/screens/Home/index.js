@@ -6,6 +6,7 @@ import Geocoder from 'react-native-geocoding';
 import MapViewDirections from 'react-native-maps-directions';
 import { MapsAPI } from '../../config';
 import useDevsUberApi from '../../useDevsUberApi';
+import AddressModal from '../../components/AddressModal';
 
 import { 
     Container,
@@ -46,6 +47,9 @@ const Page = () => {
     const [requestTime, setRequestTime] = useState(0);
     const [requestPrice, setRequestPrice] = useState(0);
 
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+
     useEffect(()=>{
         Geocoder.init(MapsAPI, {language:'pt-br'});
         getMyCurrentPosition();
@@ -85,7 +89,8 @@ const Page = () => {
     }
 
     const handleFromClick = () => {
-
+        setModalTitle('Escolha uma origem');
+        setModalVisible(true);
     }
     const handleToClick = async () => {
         const geo = await Geocoder.from('Cangas, MT');
@@ -149,14 +154,18 @@ const Page = () => {
                 
         <Container>
             <StatusBar barStyle="light-content" />
+            <AddressModal
+                title={modalTitle}
+                visible={modalVisible}
+                visibleAction={setModalVisible}
+            />
             <MapView
                 ref={map}
                 style={{flex:1}}
                 provider="google"
                 camera={mapLoc}
                 onRegionChangeComplete={handleMapChange}
-            >
-            
+            >            
                 {fromLoc.center &&
                     <MapView.Marker pinColor="black" coordinate={fromLoc.center} />
                 }

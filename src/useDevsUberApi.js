@@ -34,7 +34,7 @@ export default () => ({
                     error:''
                 };
 
-                json.price = distance * 7;
+                json.price = distance * 2;
 
                 resolve(json);
             }, 1000);
