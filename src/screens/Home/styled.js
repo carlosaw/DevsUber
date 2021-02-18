@@ -25,7 +25,7 @@ export const IntineraryItem = styled.TouchableHighlight`
 export const IntineraryLabel = styled.View`
     flex-direction: row;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 `;
 
 export const IntineraryPoint = styled.View`
@@ -62,12 +62,12 @@ export const RequestDetail = styled.View`
 export const RequestTitle = styled.Text`
     color: #999;
     font-weight:bold;
-    font-size: 12px;
+    font-size: 13px;
 `;
 
 export const RequestValue = styled.Text`
     color: #000;
-    font-size: 12px;
+    font-size: 15px;
 `;
 
 export const RequestButtons = styled.View`

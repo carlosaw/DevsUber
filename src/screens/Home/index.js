@@ -120,7 +120,7 @@ const Page = () => {
                 left:50,
                 right:50,
                 bottom:50,
-                top:850
+                top:900
             }
         });
     }
