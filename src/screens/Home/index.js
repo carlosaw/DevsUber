@@ -49,6 +49,7 @@ const Page = () => {
 
     const [modalTitle, setModalTitle] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalField, setModalField] = useState('');
 
     useEffect(()=>{
         Geocoder.init(MapsAPI, {language:'pt-br'});
@@ -60,6 +61,12 @@ const Page = () => {
             setShowDirections(true);
         }
     }, [toLoc]);
+
+    useEffect(()=>{
+        if(fromLoc.center) {
+            setMapLoc(fromLoc);
+        }        
+    }, [fromLoc]);
 
     const getMyCurrentPosition = ()  => {
         Geolocation.getCurrentPosition(async (info)=>{
@@ -90,24 +97,13 @@ const Page = () => {
 
     const handleFromClick = () => {
         setModalTitle('Escolha uma origem');
+        setModalField('from');
         setModalVisible(true);
     }
     const handleToClick = async () => {
-        const geo = await Geocoder.from('Cangas, MT');
-        if(geo.results.length > 0) {
-            const loc = {
-                name:geo.results[0].formatted_address,
-                center:{
-                    latitude:geo.results[0].geometry.location.lat,
-                    longitude:geo.results[0].geometry.location.lng
-                },
-                zoom:16,
-                pitch:0,
-                altitude:0,
-                heading:0
-            };
-            setToLoc(loc);
-        }
+        setModalTitle('Escolha um destino');
+        setModalField('to');
+        setModalVisible(true);
     }
 
     const handleDirectionsReady = async (r) => {
@@ -124,7 +120,7 @@ const Page = () => {
             edgePadding:{
                 left:50,
                 right:50,
-                bottom:50,
+                bottom:20,
                 top:900
             }
         });
@@ -149,6 +145,30 @@ const Page = () => {
         cam.altitude = 0;
         setMapLoc(cam);
     }
+
+    const handleModalClick = (field, address) => {
+        //console.log("FIELDS: ", field);
+        //console.log("ADDRESS: ", address);
+        const loc = {
+            name:address.address,
+            center:{
+                latitude:address.latitude,
+                longitude:address.longitude
+            },
+            zoom:16,
+            pitch:0,
+            altitude:0,
+            heading:0
+        };
+        switch(field) {
+            case 'from':
+                setFromLoc(loc);
+                break;
+            case 'to':
+                setToLoc(loc);
+                break;
+        }
+    }
     
     return (
                 
@@ -158,6 +178,8 @@ const Page = () => {
                 title={modalTitle}
                 visible={modalVisible}
                 visibleAction={setModalVisible}
+                field={modalField}//qual campo a ser alterado
+                clickAction={handleModalClick}
             />
             <MapView
                 ref={map}
