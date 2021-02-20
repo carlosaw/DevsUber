@@ -25,10 +25,12 @@ import {
     RequestButtons,
     RequestButton,
     RequestButtonText,
-    LoadingArea
+    LoadingArea,
+    MenuArea,
+    MenuImage
  } from './styled';
 
-const Page = () => {
+const Page = (props) => {
     const map = useRef();
     const api = useDevsUberApi();
 
@@ -194,6 +196,10 @@ const Page = () => {
                 break;
         }
     }
+
+    const handleMenu = () => {
+        props.navigation.openDrawer();
+    }
     
     return (
                 
@@ -237,6 +243,9 @@ const Page = () => {
                 }
 
             </MapView>
+            <MenuArea onPress={handleMenu} underlayColor="transparent">
+                <MenuImage source={require('../../assets/menu.png')} />
+            </MenuArea>
             <IntineraryArea>
                 <IntineraryItem onPress={handleFromClick} underlayColor="#EEE">
                 <>

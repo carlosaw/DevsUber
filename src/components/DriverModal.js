@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from 'react-native';
 import styled from 'styled-components/native';
+import { AirbnbRating } from 'react-native-ratings';
+import useDevsUberApi from '../useDevsUberApi';
 
 const ModalArea = styled.View`
     flex: 1;
@@ -66,9 +68,28 @@ const TripButtonText = styled.Text`
     color: #FFF;
 `;
 
+const RatingTitle = styled.Text`
+    margin: 20px;
+    font-size: 10px;
+    color: #000;
+`;
+
 
 export default (props) => {
+    const api = useDevsUberApi();
 
+    const [showStars, setShowStars] = useState(false);
+
+    const handleFinishTrip = () => {
+        setShowStars(true);
+    }
+
+    const handleRating = async (rating) => {
+        await api.setRating(rating);
+        props.visibleAction(false);// Fecha o modal
+
+        alert("Obrigado pela viagem");
+    }
 
     return (
         <Modal
@@ -81,14 +102,30 @@ export default (props) => {
                 <DriverAvatar source={{uri:props.driver.avatar}} />
                 <DriverName>{props.driver.name}</DriverName>
                 <DriverStars>{props.driver.stars} estrelas</DriverStars>
-                <DriveCarInfo>
-                    <DriverCar>{props.driver.carName}</DriverCar>
-                    <DriverColor>{props.driver.carColor}</DriverColor>
-                    <DriverPlate>{props.driver.carPlate}</DriverPlate>
-                </DriveCarInfo>
-                    <TripButton>
-                        <TripButtonText>Encerrar Viagem</TripButtonText>
-                    </TripButton>
+                {!showStars &&
+                    <>
+                        <DriveCarInfo>
+                            <DriverCar>{props.driver.carName}</DriverCar>
+                            <DriverColor>{props.driver.carColor}</DriverColor>
+                            <DriverPlate>{props.driver.carPlate}</DriverPlate>
+                        </DriveCarInfo>
+                    
+                        <TripButton onPress={handleFinishTrip}>
+                            <TripButtonText>Encerrar Viagem</TripButtonText>
+                        </TripButton>
+                    </>
+                }
+                {showStars &&
+                    <>  
+                        <RatingTitle>Avalie o motorista para encerrar a viagem</RatingTitle>
+                        <AirbnbRating
+                            count={5}
+                            reviews={['Terrível', 'Ruim', 'Bom', 'Muito bom', 'Ótimo']}
+                            defaultRating={5}
+                            onFinishRating={handleRating}
+                        />
+                    </>
+                }
             </ModalArea>            
         </Modal>
     );

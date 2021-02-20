@@ -5,7 +5,8 @@ export default () => ({
             setTimeout(()=>{
                 let json = {
                     error:'',
-                    token:'123'
+                    token:'123',
+                    name:'Paulo da Silva'
                 };
                 resolve(json);
             }, 1000);
@@ -22,6 +23,7 @@ export default () => ({
                     json.error = 'E-mail já existe!';
                 } else {
                     json.token = '123';
+                    json.name = 'Paulo da Silva';
                 }
                 resolve(json);
             }, 1000);
@@ -60,6 +62,19 @@ export default () => ({
                 resolve(json);
             }, 3000);
         });
-    }
+    },
 
+    setRating:(rating)=>{
+        return new Promise((resolve, reject)=>{
+            setTimeout(()=>{
+                let json = {
+                    error:''
+                };
+
+
+
+                resolve(json);
+            }, 1000);
+        });
+    }
 });

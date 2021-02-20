@@ -36,9 +36,10 @@ const Page = (props) => {
       } else {        
         // 1. guardar o token no reducer
         props.setToken(res.token);
+        props.setName(res.name);
         // 2. redirecionar para o Home
         props.navigation.dispatch(StackActions.reset({
-          key: null,
+          //key: null,
           index:0,
           actions:[
               NavigationActions.navigate({routeName:'HomeDrawer'})
@@ -58,12 +59,13 @@ const Page = (props) => {
       } else {        
         // 1. guardar o token no reducer
         props.setToken(res.token);
+        props.setName(res.name);
         // 2. redirecionar para o Home
         props.navigation.dispatch(StackActions.reset({
-          key: null,
+          //key: null,
           index:0,
           actions:[
-              NavigationActions.navigate({routeName:'HomeStack'})
+              NavigationActions.navigate({routeName:'HomeDrawer'})
           ]
         }));
       }
@@ -145,12 +147,14 @@ const Page = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-      token:state.userReducer.token
+      token:state.userReducer.token,
+      //name:state.userReducer.name
   };
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    setToken:(token)=>dispatch({type:'SET_TOKEN', payload:{token}})
+    setToken:(token)=>dispatch({type:'SET_TOKEN', payload:{token}}),
+    setName:(name)=>dispatch({type:'SET_NAME', payload:{name}})
   };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Page);

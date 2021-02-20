@@ -4,11 +4,26 @@ export const Container = styled.View`
     flex: 1;
     background-color: #EEE;
 `;
+export const MenuArea = styled.TouchableHighlight`
+    width: 55px;
+    height: 55px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const MenuImage = styled.Image`
+    width: 24px;
+    height: 24px;
+`;
+
 export const IntineraryArea = styled.View`
     position: absolute;
     left: 10px;
     right: 10px;
-    top: 50px;
+    top: 55px;
     background-color: #FFF;
     border-radius: 5px;
     box-shadow: 0px 0px 4px #999;
