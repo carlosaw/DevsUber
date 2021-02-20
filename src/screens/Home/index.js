@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StatusBar } from 'react-native';
+import { ActivityIndicator, StatusBar } from 'react-native';
 import MapView from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
@@ -7,6 +7,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import { MapsAPI } from '../../config';
 import useDevsUberApi from '../../useDevsUberApi';
 import AddressModal from '../../components/AddressModal';
+import DriverModal from '../../components/DriverModal';
 
 import { 
     Container,
@@ -23,7 +24,8 @@ import {
     RequestValue,
     RequestButtons,
     RequestButton,
-    RequestButtonText
+    RequestButtonText,
+    LoadingArea
  } from './styled';
 
 const Page = () => {
@@ -50,6 +52,11 @@ const Page = () => {
     const [modalTitle, setModalTitle] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const [modalField, setModalField] = useState('');
+
+    const [driverInfo, setDriverInfo] = useState({});
+    const [driverModalVisible, setDriverModalVisible] = useState(false);
+
+    const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
         Geocoder.init(MapsAPI, {language:'pt-br'});
@@ -114,8 +121,7 @@ const Page = () => {
         if(!priceReq.error) {
             setRequestPrice( priceReq.price );
         }
-        
-//console.log(priceReq.price);
+      
         map.current.fitToCoordinates(r.coordinates, {
             edgePadding:{
                 left:50,
@@ -126,8 +132,27 @@ const Page = () => {
         });
     }
 
-    const handleRequestGo = () => {
-        
+    // Achar motorista
+    const handleRequestGo = async () => {
+        setLoading(true);
+        const driver = await api.findDriver({
+          fromlat:fromLoc.center.latitude,
+          fromlng:fromLoc.center.longitude,
+          tolat:toLoc.center.latitude,
+          tolng:toLoc.center.longitude
+        });
+        setLoading(false);
+
+        if(!driver.error) {
+          // achou motorista
+          setDriverInfo(driver.driver);
+          setDriverModalVisible(true);
+
+          handleRequestCancel();
+
+        } else {
+          alert(driver.error);
+        }
     }
 
     const handleRequestCancel = () => {
@@ -174,6 +199,11 @@ const Page = () => {
                 
         <Container>
             <StatusBar barStyle="light-content" />
+            <DriverModal
+              driver={driverInfo}
+              visible={driverModalVisible}
+              visibleAction={setDriverModalVisible}
+            />
             <AddressModal
                 title={modalTitle}
                 visible={modalVisible}
@@ -200,7 +230,7 @@ const Page = () => {
                         origin={fromLoc.center}
                         destination={toLoc.center}
                         strokeWidth={5}
-                        strokeColor="black"
+                        strokeColor="#1E90FF"
                         apikey={MapsAPI}
                         onReady={handleDirectionsReady}
                     />
@@ -266,6 +296,11 @@ const Page = () => {
                     </IntineraryItem>
                 }
             </IntineraryArea>
+            {loading &&
+              <LoadingArea>
+                <ActivityIndicator size="large" color="#FFF" />
+              </LoadingArea>
+            }
         </Container>
                     
     );

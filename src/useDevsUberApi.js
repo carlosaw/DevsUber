@@ -39,6 +39,27 @@ export default () => ({
                 resolve(json);
             }, 1000);
         });
+    },
+
+    findDriver:(options) => {
+        return new Promise((resolve, reject)=>{
+            setTimeout(()=>{
+                let json = {
+                    error:''
+                };
+
+                json.driver = {
+                    name:'Gabriel Medina',
+                    avatar:'https://www.revistaplaneta.com.br/wp-content/uploads/sites/3/2017/12/15_pl537_pessoa-324x235.jpg',
+                    stars:4,
+                    carName:'Honda Civic',
+                    carColor:'Branco',
+                    carPlate:'OBC 1385'
+                };
+
+                resolve(json);
+            }, 3000);
+        });
     }
 
 });
