@@ -21,7 +21,7 @@ export const Menu = styled.View`
     margin-bottom: 20px;
 `;
 export const MenuItem = styled.TouchableHighlight`
-    padding: 20px;
+    padding: 10px;
     border-bottom-width: 5px;
     border-bottom-color: ${props=>props.active?'#FFF':'#3574CB'}
 `;

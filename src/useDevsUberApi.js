@@ -76,5 +76,6 @@ export default () => ({
                 resolve(json);
             }, 1000);
         });
-    }
+    },
+
 });
