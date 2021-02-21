@@ -3,8 +3,11 @@ import CustomDrawer from '../components/CustomDrawer';
 
 import Home from '../screens/Home';
 
+import AppConfig from '../screens/AppConfig';
+
 export default createDrawerNavigator({
-    Home
+    Home,
+    AppConfig
 }, {
     contentComponent:CustomDrawer
 });
